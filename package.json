@@ -7,7 +7,7 @@
     "@emotion/styled": "^11.10.5",
     "@faker-js/faker": "^7.6.0",
     "@mui/icons-material": "^5.10.15",
-    "@mui/material": "^5.10.13",
+    "@mui/material": "^5.10.15",
     "@react-three/cannon": "^6.5.0",
     "@react-three/drei": "^9.40.0",
     "@react-three/fiber": "^8.9.1",

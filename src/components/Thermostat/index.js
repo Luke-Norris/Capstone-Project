@@ -7,14 +7,22 @@ import { Box } from "@mui/system";
 import Thermo from "react-nest-thermostat";
 
 const Thermostat = () => {
-  const [temp, setTemp] = useState(0);
+  const [temp, setTemp] = useState(68);
 
   const increase = () => {
-    setTemp((count) => count + 1);
+    if (temp == 80) {
+      console.log("You cannot increase the temperature any higher!")
+    } else {
+      setTemp((count) => count + 1);
+    }
   };
 
   const decrease = () => {
-    setTemp((count) => count - 1);
+    if (temp == 55) {
+      console.log("You cannot decrease the temperature any lower!")
+    } else {
+      setTemp((count) => count - 1);
+    }
   };
 
   return (
@@ -25,7 +33,7 @@ const Thermostat = () => {
           width="150px"
           ambientTemperature={temp}
           targetTemperature={temp}
-          hvacMode={temp == 0 ? "off" : temp >= 30 ? "heating" : "cooling"}
+          hvacMode={temp == 0 ? "off" : temp >= 75 ? "heating" : "cooling"}
         />
       </Box>
       <Box ml={17} mt={0}>
