@@ -40,9 +40,9 @@ const ControlledSwitches = () => {
 
   return (
     <FormGroup>
-      <FormControlLabel control={frontDoorSwitch} label="Front Door" />
-      <FormControlLabel control={backDoorSwitch} label="Back Door" />
-      <FormControlLabel control={garageDoorSwitch} label="Garage Door" />
+      <FormControlLabel control={frontDoorSwitch} label="Front Door" style={{color: 'white'}} />
+      <FormControlLabel control={backDoorSwitch} label="Back Door" style={{color: 'white'}} />
+      <FormControlLabel control={garageDoorSwitch} label="Garage Door" style={{color: 'white'}}/>
     </FormGroup>
   );
 };

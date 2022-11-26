@@ -4,6 +4,7 @@ import ChartJsExample from '../components/ChartJsExample';
 import {useState} from 'react';
 import { Line } from 'react-chartjs-2';
 import {Chart as ChartJS, Title, Tooltip, LineElement, Legend, CategoryScale, LinearScale, PointElement} from 'chart.js';
+import { Grid } from "@mui/material";
 ChartJS.register(
   Title, Tooltip, LineElement, Legend,
   CategoryScale, LinearScale, PointElement
@@ -24,8 +25,13 @@ const Metrics = () => {
   return (
     <div>
       <NewNavbar />
-      <h1>Sample chartjs example</h1>
-      <Line data={data}>Hello</Line>
+      <Grid container spacing={15}>
+        <Grid item xs={8}>
+          <h1>Sample chartjs example</h1>
+          <h1>Sample chartjs example</h1>
+          <Line data={data}>Hello</Line>
+        </Grid>
+      </Grid>
     </div>
   );
 };
