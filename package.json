@@ -16,7 +16,10 @@
     "@testing-library/user-event": "^13.5.0",
     "bootstrap": "^5.2.2",
     "chart.js": "^4.0.1",
+    "child_process": "^1.0.2",
     "drei": "^2.2.21",
+    "mysql": "^2.18.1",
+    "pg": "^8.8.0",
     "react": "^18.2.0",
     "react-bootstrap": "^2.6.0",
     "react-chartjs-2": "^5.0.1",
@@ -54,5 +57,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "browser": {
+    "child_process": false
   }
 }
