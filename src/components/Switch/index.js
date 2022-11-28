@@ -2,7 +2,6 @@ import * as React from "react";
 import Switch from "@mui/material/Switch";
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
-import { SensorsTwoTone } from "@mui/icons-material";
 
 const ControlledSwitches = () => {
   const [frontDoor, setFrontDoor] = React.useState(true);
