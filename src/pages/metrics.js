@@ -12,37 +12,54 @@ ChartJS.register(
 )
 
 const Metrics = () => {
-  console.log(jsonElectricData['7'])
+  let new_data = {
+    
+  }
   let costs = []
   let dates = []
   for (const [key, value] of Object.entries(jsonElectricData)) {
-    //console.log(key, value);
     dates.push(value['time'])
-    //console.log(parseFloat(value['cost'].slice(1).replace(/\,/g,''), 10))
     costs.push(parseFloat(value['cost'].slice(1).replace(/\,/g,''), 10))
+    let date = new Date(value['time'])
+    let new_key = String(date.getMonth())+'/'+String(date.getDate())+'/'+String(date.getFullYear())
+    new_data[new_key] = 0;
   }
-  console.log(dates)
-  console.log(costs)
-  const [data, setData] = useState({
-    // labels:["Jan","Feb","March","April","May","June","July","August","September","Oct","Nov","Dec"],
-    labels:dates,
+  for (const [key, value] of Object.entries(jsonElectricData)) {
+    let date = new Date(value['time'])
+    let new_key = String(date.getMonth())+'/'+String(date.getDate())+'/'+String(date.getFullYear())
+    new_data[new_key] += parseFloat(value['cost'].slice(1).replace(/\,/g,''), 10);
+  }
+  console.log(new_data)
+  let milliseconds = 2302345654324; // epoch date
+  let date = new Date(milliseconds);  
+  // console.log(String(date.getMonth())+'/'+String(date.getDate())+'/'+String(date.getFullYear()))
+
+  // console.log(dates)
+  // console.log(costs)
+  const [electricData, setElectricData] = useState({
+    labels:Object.keys(new_data),
     datasets:[
       {
         label:"First Dataset",
-        // data:[10,20,30,42,51,82,31,59,61,73,91,58],
-        data:costs,
-        backgroundColor:'yellow'
+        data:Object.values(new_data),
+        backgroundColor:'blue'
       }
     ]
   })
   return (
     <div>
       <NewNavbar />
+      <Line data={electricData}>Hello</Line>
       <Grid container spacing={15}>
-        <Grid item xs={8}>
+        <Grid item xs={5}>
           <h1>Sample chartjs example</h1>
+          <h1>Electricity Usage</h1>
+          <Line data={electricData}>Hello</Line>
+        </Grid>
+        <Grid item xs={5}>
           <h1>Sample chartjs example</h1>
-          <Line data={data}>Hello</Line>
+          <h1>HVAC Usage</h1>
+          <Line data={electricData}>Hello</Line>
         </Grid>
       </Grid>
     </div>

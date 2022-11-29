@@ -23,13 +23,13 @@ const FloorPlan = () => {
           alt="fireSpot"
         />
       </div>
-      <Card style={{height:'20vw', width:'100vw', backgroundColor:'blue'}} >
-        <Grid container spacing={15}>
-            <Grid item xs={3}>
+      <Card style={{height:'25vw', width:'100vw', backgroundColor:'blue'}} >
+        <Grid container spacing={10}>
+            <Grid item xs={4}>
               <h1 style={{color:'white'}}>Thermostat</h1>
                 <Thermostat />
             </Grid>
-            <Grid item xs={2}>
+            <Grid item xs={1}>
               <h1 style={{color:'white'}}>Doors</h1>
               <ControlledSwitches />
             </Grid>
