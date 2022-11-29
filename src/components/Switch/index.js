@@ -7,8 +7,7 @@ const ControlledSwitches = () => {
   const [frontDoor, setFrontDoor] = React.useState(true);
   const [backDoor, setBackDoor] = React.useState(true);
   const [garageDoor, setGarageDoor] = React.useState(true);
-  const { spawn } = require("child_process");
-  const sensor = spawn("python", ["pythonScript/updateEvents.py"]);
+  const spawn = require("child_process").spawn;
 
   const frontDoorSwitch = (
     <Switch
@@ -16,6 +15,15 @@ const ControlledSwitches = () => {
       onChange={(event) => {
         setFrontDoor(event.target.checked);
         // Here we need to run the update function which is in updateEvents.py
+        const sensor = spawn("python", [
+          "pythonScript/updateEvents.py",
+          "door_back",
+        ]);
+
+        sensor.stdout.on("data", (data) => {
+          let info = data.toString("utf8");
+          console.log(info);
+        });
       }}
       inputProps={{ "aria-label": "controlled" }}
     />
