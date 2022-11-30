@@ -1,4 +1,6 @@
 import React from 'react';
+import axios from "axios";
+import { useEffect } from 'react';
 import NewNavbar from '../components/NewNavbar';
 import ChartJsExample from '../components/ChartJsExample';
 import {useState} from 'react';
@@ -12,9 +14,53 @@ ChartJS.register(
 )
 
 const Metrics = () => {
-  let new_data = {
-    
-  }
+  // This should probably be in a different file but I am just keeping it all here for now.
+
+  // Fetches the data from our electric pSQL table
+  const [electricData1, setElectricData1] = useState([])
+    // 
+    useEffect(() => {
+    const data = fetch('http://127.0.0.1:5000/electricFetch')
+                     .then(response => response.json())
+                     .then(data => setElectricData1(data)).then()
+
+    //console.log(data)
+    }, [])
+
+  // Fetches the data from our water pSQL table
+  const [waterData, setWaterData] = useState([])
+  
+  useEffect(() => {
+  const data = fetch('http://127.0.0.1:5000/waterFetch')
+                    .then(response => response.json())
+                    .then(data => setWaterData(data)).then()
+
+  }, [])
+
+  // Fetches the data from our hvac pSQL table
+  const [hvacData, setHvacData] = useState([])
+  
+  useEffect(() => {
+  const data = fetch('http://127.0.0.1:5000/hvacFetch')
+                    .then(response => response.json())
+                    .then(data => setHvacData(data)).then()
+
+  }, [])
+
+  // Fetches the data from our events pSQL table
+  const [eventsData, setEventsData] = useState([])
+  
+  useEffect(() => {
+  const data = fetch('http://127.0.0.1:5000/eventsFetch')
+                    .then(response => response.json())
+                    .then(data => setEventsData(data)).then()
+
+
+  //console.log(data)
+  }, [])
+
+  // console.log(hvacData)
+  let new_data = {}
   let costs = []
   let dates = []
   for (const [key, value] of Object.entries(jsonElectricData)) {
@@ -29,7 +75,7 @@ const Metrics = () => {
     let new_key = String(date.getMonth())+'/'+String(date.getDate())+'/'+String(date.getFullYear())
     new_data[new_key] += parseFloat(value['cost'].slice(1).replace(/\,/g,''), 10);
   }
-  console.log(new_data)
+  //console.log(new_data)
   let milliseconds = 2302345654324; // epoch date
   let date = new Date(milliseconds);  
   // console.log(String(date.getMonth())+'/'+String(date.getDate())+'/'+String(date.getFullYear()))
