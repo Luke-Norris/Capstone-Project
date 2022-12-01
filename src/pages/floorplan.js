@@ -9,12 +9,15 @@ import ControlledLightSwitches from "../components/LightSwitches";
 const FloorPlan = () => {
   return (
     <div>
+      {/* <h1 style={{color:'white'}}>
+        Floorplan
+      </h1> */}
       <Helmet>
-        <style>{"body { background-color: 	#FFFFFF; }"}</style>
+        <style>{"body { background-color: 	#d5e5f6; }"}</style>
       </Helmet>
       <NewNavbar />
-      <h1 align="center">secret text</h1>
       <div className="container">
+      <h1 align="center">Floorplan</h1>
         <img
           align="center"
           src={floorplan}

@@ -3,23 +3,32 @@ import { useEffect } from 'react';
 import NewNavbar from '../components/NewNavbar';
 import {useState} from 'react';
 import { Line } from 'react-chartjs-2';
+import { Helmet } from "react-helmet";
 import {Chart as ChartJS, Title, Tooltip, LineElement, Legend, CategoryScale, LinearScale, PointElement} from 'chart.js';
-import { Grid } from "@mui/material";
+import { Grid, Card } from "@mui/material";
 ChartJS.register(
   Title, Tooltip, LineElement, Legend,
   CategoryScale, LinearScale, PointElement
 )
 
 const Metrics = () => {
+  const [electricData1, setElectricData1] = useState([])
+  const [waterData, setWaterData] = useState([])
+  const [hvacData, setHvacData] = useState([])
+  const [eventsData, setEventsData] = useState([])
   // This should probably be in a different file but I am just keeping it all here for now.
   const [electricDates, setElectricDates] = useState([])
   const [electricUsage, setElectricUsage] = useState([])
   const [electricCost, setElectricCost] = useState([])
+
+  const [hvacDates, setHvacDates] = useState([])
+  const [hvacUsage, setHvacUsage] = useState([])
+  const [hvacCost, setHvacCost] = useState([])
   // Fetches the data from our electric pSQL table
-  const [electricData1, setElectricData1] = useState([])
   useEffect(() => {
     const run = async () => {
-      const data = await (await fetch('http://127.0.0.1:5000/electricFetch')).json()
+      const data = await (await fetch('http://127.0.0.1:5000/electricFetch/4')).json()
+      console.log('THIS IS ELECTRIC: ',data)
       setElectricData1(data)
     }
     run();
@@ -39,74 +48,197 @@ const Metrics = () => {
     console.log('electric usage:',electricUsage)
     console.log('electric cost:',electricCost)
     }, [electricData1])
-
+  ////////////////////////////////////////////////////////////////////////////////
+  const [waterDates, setWaterDates] = useState([])
+  const [waterUsage, setWaterUsage] = useState([])
+  const [waterCost, setWaterCost] = useState([])
   // Fetches the data from our water pSQL table
-  const [waterData, setWaterData] = useState([])
   useEffect(() => {
     const run = async () => {
-      const data = await (await fetch('http://127.0.0.1:5000/waterFetch')).json()
-      console.log('water',data)
+      const data = await (await fetch('http://127.0.0.1:5000/waterFetch/2')).json()
+      console.log('THIS IS WATER: ',data)
       setWaterData(data)
       //console.log(data);
     }
     run();
   }, [])
 
-  // Fetches the data from our hvac pSQL table
-  const [hvacData, setHvacData] = useState([])
   useEffect(() => {
-  const data = fetch('http://127.0.0.1:5000/hvacFetch')
-                    .then(response => response.json())
-                    .then(data => setHvacData(data)).then()
-  }, [])
-  
+    if (waterDates.length == 0) {
+      for (var i = 0; i < waterData.length-1; i++) {
+        //console.log('test', electricData1[i][0], electricData1[i][1])
+        waterDates.push(waterData[i][0]);
+        waterUsage.push(waterData[i][1]);
+        waterCost.push(waterData[i][2]);
+      }
 
-  // Fetches the data from our events pSQL table
-  const [eventsData, setEventsData] = useState([])
+    }
+    console.log('water weeks:',waterDates)
+    console.log('water usage:',waterUsage)
+    console.log('water cost:',waterCost)
+    }, [waterData])
+  /////////////////////////////////////////////////////////////////////////////////
+  // Fetches the data from our hvac pSQL table
   useEffect(() => {
     const run = async () => {
-      const data = await (await fetch('http://127.0.0.1:5000/eventsFetch')).json()
-      setEventsData(data)
+      const data = await (await fetch('http://127.0.0.1:5000/hvacFetch/1')).json()
+      console.log('THIS IS HVAC: ',data)
+      setHvacData(data)
       //console.log(data);
     }
     run();
   }, [])
 
-  const [electricData, setElectricData] = useState({
-    labels:electricDates,
-    // Object.keys(new_data) or ['June','July','Aug','Sep','Oct','Nov']
-    datasets:[
-      {
-        label:"First Dataset",
-        data:electricUsage,
-        backgroundColor:'blue'
+  useEffect(() => {
+    if (hvacDates.length == 0) {
+      for (var i = 0; i < waterData.length-1; i++) {
+        //console.log('test', electricData1[i][0], electricData1[i][1])
+        hvacDates.push(hvacData[i][0]);
+        hvacUsage.push(hvacData[i][1]);
+        hvacCost.push(hvacData[i][2]);
       }
-    ]
-  })
+
+    }
+    console.log('hvac weeks:',hvacDates)
+    console.log('hvac usage:',hvacUsage)
+    console.log('hvac cost:',hvacCost)
+    }, [hvacData])
+  
+
+ 
   return (
     <div>
+      <Helmet>
+        <style>{"body { background-color: 	#d5e5f6; }"}</style>
+      </Helmet>
       <NewNavbar />
-      <Line data={{
-    labels:electricDates,
-    // Object.keys(new_data) or ['June','July','Aug','Sep','Oct','Nov']
-    datasets:[
-      {
-        label:"First Dataset",
-        data:electricUsage,
-        backgroundColor:'blue'
-      }
-    ]
-  }}>Hello</Line>
-      <Grid container spacing={15}>
+      <h1>spacer</h1>
+      {/* row 1 */}
+      <Grid container spacing={10}>
         <Grid item xs={5}>
-          <h1>Sample chartjs example</h1>
-          <h1>Electricity Usage</h1>
-          <Line data={electricData}>Hello</Line>
+          <Card style={{height:'20vw', marginTop:'20px',marginLeft:'20px',marginBottom:'20px'}}>
+            <Line options={{responsive: true,
+                plugins: {
+                title: {display: true,
+                text: 'Electric Usage',},},}} 
+                data={{
+          labels:electricDates,
+          datasets:[{
+              label:"Watts",
+              data:electricUsage,
+              backgroundColor:'blue'}]
+        }}>Hello</Line>
+          </Card>
+        </Grid>
+        <Grid item xs={1}>
+            <Card style={{width:'200px',height:'15vw', marginTop:'50px', backgroundColor:'blue'}}>
+              <h1 style={{color:'white'}} align="center">{Math.trunc(electricUsage[electricUsage.length - 1]+electricUsage[electricUsage.length - 2]+electricUsage[electricUsage.length - 3]+electricUsage[electricUsage.length - 4])}</h1>
+              <text style={{color:'white'}} align="center">
+                watts used in the past month. This costed ${Math.trunc(electricCost[electricCost.length - 1]+electricCost[electricCost.length - 2]+electricCost[electricCost.length - 3]+electricCost[electricCost.length - 4])}.
+              </text>
+            </Card>
         </Grid>
         <Grid item xs={5}>
-          <h1>Sample chartjs example</h1>
-          <h1>HVAC Usage</h1>
-          <Line data={electricData}>Hello</Line>
+          <Card style={{height:'20vw',width:'550px', marginTop:'20px',marginBottom:'25px',marginRight:'200px',marginLeft:'150px'}}>
+            <Line options={{responsive: true,
+                plugins: {
+                title: {display: true,
+                text: 'Electric Cost',},},}} 
+                data={{
+          labels:electricDates,
+          datasets:[{
+                label:"Electric Cost (USD)",
+                data:electricCost,
+                backgroundColor:'red'}]
+        }}>Hello</Line>
+          </Card>
+        </Grid>
+      </Grid>
+      <Card style={{height:'25vw', width:'100vw', backgroundColor:'blue'}} >
+      {/* row 2 */}
+        <Grid container spacing={10}>
+          <Grid item xs={5}>
+            <Card style={{height:'20vw', marginTop:'20px',marginLeft:'20px',marginBottom:'20px'}}>
+              <Line options={{responsive: true,
+                plugins: {
+                title: {display: true,
+                text: 'Water Usage',},},}} 
+                data={{
+                labels:waterDates,
+                datasets:[{
+                    label:"Gallons",
+                    data:waterUsage,
+                    backgroundColor:'blue'}]
+              }}>Hello</Line>
+            </Card>
+          </Grid>
+          <Grid item xs={1}>
+            <Card style={{width:'200px',height:'15vw', marginTop:'50px'}}>
+              <h1 style={{color:'blue'}} align="center">{Math.trunc(waterUsage[waterUsage.length - 1]+waterUsage[waterUsage.length - 2]+waterUsage[waterUsage.length - 3]+waterUsage[waterUsage.length - 4])}</h1>
+                <text style={{color:'blue'}} align="center">
+                  Gallons used in the past month. This costed ${Math.trunc(waterCost[waterCost.length - 1]+waterCost[waterCost.length - 2]+waterCost[waterCost.length - 3]+waterCost[waterCost.length - 4])}.
+                </text>
+            </Card>
+          </Grid>
+          <Grid item xs={5}>
+            <Card style={{height:'20vw',width:'550px', marginTop:'20px',marginBottom:'25px',marginRight:'200px',marginLeft:'150px'}}>
+            <Line options={{responsive: true,
+                plugins: {
+                title: {display: true,
+                text: 'Water Cost',},},}}
+                data={{
+              labels:waterDates,
+              datasets:[{
+                    label:"USD",
+                    data:waterCost,
+                    backgroundColor:'red'}]
+            }}>Hello</Line>
+            </Card>
+          </Grid>
+        </Grid>
+      </Card>
+      {/* row 3 */}
+      <Grid container spacing={10}>
+        <Grid item xs={5}>
+          <Card style={{height:'20vw', marginTop:'20px',marginLeft:'20px',marginBottom:'20px'}}>
+            <Line options={{responsive: true,
+                  plugins: {
+                  title: {display: true,
+                  text: 'HVAC Temperature',},},}}
+                  data={{
+              labels:hvacDates,
+              datasets:[{
+                  label:"Farenheit",
+                  data:hvacUsage,
+                  backgroundColor:'blue'}
+                ]
+            }}>Hello</Line>
+          </Card>
+        </Grid>
+        <Grid item xs={1}>
+          <Card style={{width:'200px',height:'15vw', marginTop:'50px', backgroundColor:'blue'}}>
+          <h1 style={{color:'white'}} align="center">${Math.trunc(hvacCost[hvacCost.length - 1]+hvacCost[hvacCost.length - 2]+hvacCost[hvacCost.length - 3]+hvacCost[hvacCost.length - 4])}</h1>
+              <text style={{color:'white'}} align="center">
+                spent on A/C within the past month.
+              </text>
+          </Card>
+        </Grid>
+        <Grid item xs={5}>
+          <Card style={{height:'20vw',width:'550px', marginTop:'20px',marginBottom:'25px',marginRight:'200px',marginLeft:'150px'}}>
+            <Line options={{responsive: true,
+                  plugins: {
+                  title: {display: true,
+                  text: 'HVAC Cost',},},}}
+                  data={{
+              labels:hvacDates,
+              datasets:[
+                  {
+                    label:"USD",
+                    data:hvacCost,
+                    backgroundColor:'red'}
+                ]
+            }}>Hello</Line>
+          </Card>
         </Grid>
       </Grid>
     </div>

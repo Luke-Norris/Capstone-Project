@@ -32,7 +32,7 @@ try:
     cur = con.cursor()
 
     # GET: Fetch all movies from the database
-    @app.route('/electricFetch')
+    @app.route('/electricFetch/4')
     def fetch_electric_data():
         cur.execute("SELECT week_of_year, SUM(usage::FLOAT) AS sum_of_usage, SUM(real_cost::FLOAT) AS sum_of_real_cost FROM new_electric GROUP BY week_of_year ORDER BY week_of_year ASC")
         rows = cur.fetchall()
@@ -40,7 +40,7 @@ try:
 
         return jsonify(rows)
 
-    @app.route('/waterFetch')
+    @app.route('/waterFetch/2')
     def fetch_water_data():
         cur.execute("SELECT week_of_year, SUM(usage::FLOAT) AS sum_of_usage, SUM(real_cost::FLOAT) AS sum_of_real_cost FROM new_water GROUP BY week_of_year ORDER BY week_of_year ASC")
         rows = cur.fetchall()
@@ -49,7 +49,7 @@ try:
         return jsonify(rows)
 
 
-    @app.route('/hvacFetch')
+    @app.route('/hvacFetch/1')
     def fetch_hvac_data():
         cur.execute("SELECT week_of_year, AVG(interiortemp::FLOAT) AS mean_of_inttemp, AVG(exteriortemp::FLOAT) AS mean_of_exttemp, AVG(targettemp::FLOAT) AS mean_of_targtemp FROM new_hvac GROUP BY week_of_year ORDER BY week_of_year ASC")
         rows = cur.fetchall()
@@ -57,7 +57,7 @@ try:
 
         return jsonify(rows)
     
-    @app.route('/eventsFetch')
+    @app.route('/eventsFetch/3')
     def fetch_events_data():
         cur.execute("SELECT * FROM events")
         rows = cur.fetchall()
