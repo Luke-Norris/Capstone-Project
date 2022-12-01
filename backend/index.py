@@ -34,7 +34,7 @@ try:
     # GET: Fetch all movies from the database
     @app.route('/electricFetch')
     def fetch_electric_data():
-        cur.execute("SELECT * FROM electric;")
+        cur.execute("SELECT week_of_year, SUM(usage::FLOAT) AS sum_of_usage, SUM(real_cost::FLOAT) AS sum_of_real_cost FROM new_electric GROUP BY week_of_year ORDER BY week_of_year ASC")
         rows = cur.fetchall()
         print(rows)
 
@@ -42,7 +42,7 @@ try:
 
     @app.route('/waterFetch')
     def fetch_water_data():
-        cur.execute("SELECT * FROM water")
+        cur.execute("SELECT week_of_year, SUM(usage::FLOAT) AS sum_of_usage, SUM(real_cost::FLOAT) AS sum_of_real_cost FROM new_water GROUP BY week_of_year ORDER BY week_of_year ASC")
         rows = cur.fetchall()
         print(rows)
 
@@ -51,7 +51,7 @@ try:
 
     @app.route('/hvacFetch')
     def fetch_hvac_data():
-        cur.execute("SELECT * FROM hvac")
+        cur.execute("SELECT week_of_year, AVG(interiortemp::FLOAT) AS mean_of_inttemp, AVG(exteriortemp::FLOAT) AS mean_of_exttemp, AVG(targettemp::FLOAT) AS mean_of_targtemp FROM new_hvac GROUP BY week_of_year ORDER BY week_of_year ASC")
         rows = cur.fetchall()
         print(rows)
 

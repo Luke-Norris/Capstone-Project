@@ -1,13 +1,10 @@
 import React from 'react';
-import axios from "axios";
 import { useEffect } from 'react';
 import NewNavbar from '../components/NewNavbar';
-import ChartJsExample from '../components/ChartJsExample';
 import {useState} from 'react';
 import { Line } from 'react-chartjs-2';
 import {Chart as ChartJS, Title, Tooltip, LineElement, Legend, CategoryScale, LinearScale, PointElement} from 'chart.js';
 import { Grid } from "@mui/material";
-import jsonElectricData from '../pythonScript/electricdf.json'
 ChartJS.register(
   Title, Tooltip, LineElement, Legend,
   CategoryScale, LinearScale, PointElement
@@ -15,79 +12,73 @@ ChartJS.register(
 
 const Metrics = () => {
   // This should probably be in a different file but I am just keeping it all here for now.
-
+  const [electricDates, setElectricDates] = useState([])
+  const [electricUsage, setElectricUsage] = useState([])
+  const [electricCost, setElectricCost] = useState([])
   // Fetches the data from our electric pSQL table
   const [electricData1, setElectricData1] = useState([])
-    // 
-    useEffect(() => {
-    const data = fetch('http://127.0.0.1:5000/electricFetch')
-                     .then(response => response.json())
-                     .then(data => setElectricData1(data)).then()
+  useEffect(() => {
+    const run = async () => {
+      const data = await (await fetch('http://127.0.0.1:5000/electricFetch')).json()
+      setElectricData1(data)
+    }
+    run();
+  }, [])
 
-    //console.log(data)
-    }, [])
+  useEffect(() => {
+    if (electricDates.length == 0) {
+      for (var i = 0; i < electricData1.length-1; i++) {
+        //console.log('test', electricData1[i][0], electricData1[i][1])
+        electricDates.push(electricData1[i][0]);
+        electricUsage.push(electricData1[i][1]);
+        electricCost.push(electricData1[i][2]);
+      }
+
+    }
+    console.log('electric weeks:',electricDates)
+    console.log('electric usage:',electricUsage)
+    console.log('electric cost:',electricCost)
+    }, [electricData1])
 
   // Fetches the data from our water pSQL table
   const [waterData, setWaterData] = useState([])
-  
   useEffect(() => {
-  const data = fetch('http://127.0.0.1:5000/waterFetch')
-                    .then(response => response.json())
-                    .then(data => setWaterData(data)).then()
-
+    const run = async () => {
+      const data = await (await fetch('http://127.0.0.1:5000/waterFetch')).json()
+      console.log('water',data)
+      setWaterData(data)
+      //console.log(data);
+    }
+    run();
   }, [])
 
   // Fetches the data from our hvac pSQL table
   const [hvacData, setHvacData] = useState([])
-  
   useEffect(() => {
   const data = fetch('http://127.0.0.1:5000/hvacFetch')
                     .then(response => response.json())
                     .then(data => setHvacData(data)).then()
-
   }, [])
+  
 
   // Fetches the data from our events pSQL table
   const [eventsData, setEventsData] = useState([])
-  
   useEffect(() => {
-  const data = fetch('http://127.0.0.1:5000/eventsFetch')
-                    .then(response => response.json())
-                    .then(data => setEventsData(data)).then()
-
-
-  //console.log(data)
+    const run = async () => {
+      const data = await (await fetch('http://127.0.0.1:5000/eventsFetch')).json()
+      setEventsData(data)
+      //console.log(data);
+    }
+    run();
   }, [])
 
-  // console.log(hvacData)
-  let new_data = {}
-  let costs = []
-  let dates = []
-  for (const [key, value] of Object.entries(jsonElectricData)) {
-    dates.push(value['time'])
-    costs.push(parseFloat(value['cost'].slice(1).replace(/\,/g,''), 10))
-    let date = new Date(value['time'])
-    let new_key = String(date.getMonth())+'/'+String(date.getDate())+'/'+String(date.getFullYear())
-    new_data[new_key] = 0;
-  }
-  for (const [key, value] of Object.entries(jsonElectricData)) {
-    let date = new Date(value['time'])
-    let new_key = String(date.getMonth())+'/'+String(date.getDate())+'/'+String(date.getFullYear())
-    new_data[new_key] += parseFloat(value['cost'].slice(1).replace(/\,/g,''), 10);
-  }
-  //console.log(new_data)
-  let milliseconds = 2302345654324; // epoch date
-  let date = new Date(milliseconds);  
-  // console.log(String(date.getMonth())+'/'+String(date.getDate())+'/'+String(date.getFullYear()))
-
-  // console.log(dates)
-  // console.log(costs)
   const [electricData, setElectricData] = useState({
-    labels:Object.keys(new_data),
+    labels:electricDates,
+    // Object.keys(new_data) or ['June','July','Aug','Sep','Oct','Nov']
     datasets:[
       {
         label:"First Dataset",
-        data:Object.values(new_data),
+        data:electricUsage,
         backgroundColor:'blue'
       }
     ]
@@ -95,7 +86,17 @@ const Metrics = () => {
   return (
     <div>
       <NewNavbar />
-      <Line data={electricData}>Hello</Line>
+      <Line data={{
+    labels:electricDates,
+    // Object.keys(new_data) or ['June','July','Aug','Sep','Oct','Nov']
+    datasets:[
+      {
+        label:"First Dataset",
+        data:electricUsage,
+        backgroundColor:'blue'
+      }
+    ]
+  }}>Hello</Line>
       <Grid container spacing={15}>
         <Grid item xs={5}>
           <h1>Sample chartjs example</h1>
@@ -113,9 +114,3 @@ const Metrics = () => {
 };
   
 export default Metrics;
-// last entry of electricdf.json is messed up
-// "10447":{
-//   "id":10524,
-//   "cost":"$655,200.00",
-//   "time":1668107220000
-// }
