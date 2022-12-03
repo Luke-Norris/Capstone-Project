@@ -13,17 +13,17 @@ const NewNavbar = () => {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
             <Nav.Link href="/floorplan" style={{color:'white'}}>Floorplan</Nav.Link>
-            <Nav.Link href="/metrics" style={{color:'white'}}>Metrics</Nav.Link>
+            {/* <Nav.Link href="/metrics" style={{color:'white'}}>Metrics</Nav.Link> */}
             <Grid style={{backgroundColor:'white'}}>
-              <NavDropdown title="Learn More" id="basic-nav-dropdown">
-                <NavDropdown.Item href="/about">About the creators</NavDropdown.Item>
-                <NavDropdown.Item href="#action/3.2">
-                  Another action
+              <NavDropdown title="Metrics" id="basic-nav-dropdown">
+                <NavDropdown.Item href="/about">Electric</NavDropdown.Item>
+                <NavDropdown.Item href="/">
+                  HVAC
                 </NavDropdown.Item>
-                <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
+                <NavDropdown.Item href="/entry">Water</NavDropdown.Item>
                 <NavDropdown.Divider />
-                <NavDropdown.Item href="#action/3.4">
-                  Separated link
+                <NavDropdown.Item href="https://github.com/Luke-Norris/Capstone-Project">
+                  Github
                 </NavDropdown.Item>
               </NavDropdown>
             </Grid>

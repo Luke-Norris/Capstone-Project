@@ -5,13 +5,16 @@ import {useState} from 'react';
 import { Line } from 'react-chartjs-2';
 import { Helmet } from "react-helmet";
 import {Chart as ChartJS, Title, Tooltip, LineElement, Legend, CategoryScale, LinearScale, PointElement} from 'chart.js';
-import { Grid, Card } from "@mui/material";
+import { Grid, Card, Button } from "@mui/material";
 ChartJS.register(
   Title, Tooltip, LineElement, Legend,
   CategoryScale, LinearScale, PointElement
 )
 
 const Metrics = () => {
+  const delay = ms => new Promise(
+    resolve => setTimeout(resolve, ms)
+  );
   const [electricData1, setElectricData1] = useState([])
   const [waterData, setWaterData] = useState([])
   const [hvacData, setHvacData] = useState([])
@@ -25,84 +28,105 @@ const Metrics = () => {
   const [hvacUsage, setHvacUsage] = useState([])
   const [hvacCost, setHvacCost] = useState([])
   // Fetches the data from our electric pSQL table
+  const [electricTruthy, setElectricTruthy] = useState(false)
+  const [waterTruthy, setWaterTruthy] = useState(false)
+  const [hvacTruthy, setHvacTruthy] = useState(false)
+  const [waterDates, setWaterDates] = useState([])
+  const [waterUsage, setWaterUsage] = useState([])
+  const [waterCost, setWaterCost] = useState([])
   useEffect(() => {
     const run = async () => {
-      const data = await (await fetch('http://127.0.0.1:5000/electricFetch/4')).json()
-      console.log('THIS IS ELECTRIC: ',data)
-      setElectricData1(data)
+      const data1 = await (await fetch('http://127.0.0.1:5000/electricFetch/4')).json()
+      console.log('THIS IS ELECTRIC: ',data1)
+      setElectricData1(data1)
     }
+    delay(1000);
     run();
   }, [])
 
   useEffect(() => {
-    if (electricDates.length == 0) {
+    if (electricData1.length > 0) {
       for (var i = 0; i < electricData1.length-1; i++) {
         //console.log('test', electricData1[i][0], electricData1[i][1])
         electricDates.push(electricData1[i][0]);
         electricUsage.push(electricData1[i][1]);
         electricCost.push(electricData1[i][2]);
       }
+      setElectricTruthy(true)
 
     }
-    console.log('electric weeks:',electricDates)
-    console.log('electric usage:',electricUsage)
-    console.log('electric cost:',electricCost)
-    }, [electricData1])
+    // console.log('electric weeks:',electricDates)
+    // console.log('electric usage:',electricUsage)
+    // console.log('electric cost:',electricCost)
+  }, [electricData1])
   ////////////////////////////////////////////////////////////////////////////////
-  const [waterDates, setWaterDates] = useState([])
-  const [waterUsage, setWaterUsage] = useState([])
-  const [waterCost, setWaterCost] = useState([])
   // Fetches the data from our water pSQL table
   useEffect(() => {
     const run = async () => {
-      const data = await (await fetch('http://127.0.0.1:5000/waterFetch/2')).json()
-      console.log('THIS IS WATER: ',data)
-      setWaterData(data)
+      const data2 = await (await fetch('http://127.0.0.1:5000/waterFetch/2')).json()
+      console.log('THIS IS WATER: ',data2)
+      setWaterData(data2)
       //console.log(data);
     }
     run();
   }, [])
 
   useEffect(() => {
-    if (waterDates.length == 0) {
+    if (waterData.length > 0) {
       for (var i = 0; i < waterData.length-1; i++) {
         //console.log('test', electricData1[i][0], electricData1[i][1])
         waterDates.push(waterData[i][0]);
         waterUsage.push(waterData[i][1]);
         waterCost.push(waterData[i][2]);
       }
-
+      setWaterTruthy(true)
     }
-    console.log('water weeks:',waterDates)
-    console.log('water usage:',waterUsage)
-    console.log('water cost:',waterCost)
+    // console.log('water weeks:',waterDates)
+    // console.log('water usage:',waterUsage)
+    // console.log('water cost:',waterCost)
     }, [waterData])
   /////////////////////////////////////////////////////////////////////////////////
   // Fetches the data from our hvac pSQL table
   useEffect(() => {
     const run = async () => {
-      const data = await (await fetch('http://127.0.0.1:5000/hvacFetch/1')).json()
-      console.log('THIS IS HVAC: ',data)
-      setHvacData(data)
+      const data4 = await (await fetch('http://127.0.0.1:5000/hvacFetch/1')).json()
+      console.log('THIS IS HVAC: ',data4)
+      setHvacData(data4)
       //console.log(data);
     }
     run();
   }, [])
 
+  // end
+  // useEffect(() => {
+  //   const run = async () => {
+  //     const data3 = await (await fetch('http://127.0.0.1:5000/hvacFetch/1')).json()
+  //     console.log('THIS IS HVAC: ',data3)
+  //     await delay(1000);
+  //     setHvacData(data3)
+  //     //console.log(data);
+  //   }
+  //   delay(1000);
+  //   run();
+  // }, [])
+
   useEffect(() => {
-    if (hvacDates.length == 0) {
+    if (hvacData.length > 0) {
       for (var i = 0; i < waterData.length-1; i++) {
         //console.log('test', electricData1[i][0], electricData1[i][1])
         hvacDates.push(hvacData[i][0]);
         hvacUsage.push(hvacData[i][1]);
         hvacCost.push(hvacData[i][2]);
       }
+      setHvacTruthy(true)
 
     }
-    console.log('hvac weeks:',hvacDates)
-    console.log('hvac usage:',hvacUsage)
-    console.log('hvac cost:',hvacCost)
+    // console.log('hvac weeks:',hvacDates)
+    // console.log('hvac usage:',hvacUsage)
+    // console.log('hvac cost:',hvacCost)
     }, [hvacData])
+
+    
   
 
  
@@ -113,6 +137,7 @@ const Metrics = () => {
       </Helmet>
       <NewNavbar />
       <h1>spacer</h1>
+      <Button>Refresh</Button>
       {/* row 1 */}
       <Grid container spacing={10}>
         <Grid item xs={5}>
@@ -175,7 +200,7 @@ const Metrics = () => {
           <Grid item xs={1}>
             <Card style={{width:'200px',height:'15vw', marginTop:'50px'}}>
               <h1 style={{color:'blue'}} align="center">{Math.trunc(waterUsage[waterUsage.length - 1]+waterUsage[waterUsage.length - 2]+waterUsage[waterUsage.length - 3]+waterUsage[waterUsage.length - 4])}</h1>
-                <text style={{color:'blue'}} align="center">
+                <text style={{color:'blue' ,marginLeft:'15px'}} align="center">
                   Gallons used in the past month. This costed ${Math.trunc(waterCost[waterCost.length - 1]+waterCost[waterCost.length - 2]+waterCost[waterCost.length - 3]+waterCost[waterCost.length - 4])}.
                 </text>
             </Card>
